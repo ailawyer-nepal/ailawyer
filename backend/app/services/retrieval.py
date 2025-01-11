@@ -1,4 +1,3 @@
-from app.services.llm import translate_to_nepali
 from app.utils.query_qdrant import generate_embeddings
 from typing import List, Dict
 
@@ -8,8 +7,6 @@ def retriever(
     query,
     top_k: int = 5,
 ) -> List[Dict]:
-    query = translate_to_nepali(query)
-    print("Translated query:", query)
     query_embedding = generate_embeddings([query])
     
     # Convert NumPy array to list

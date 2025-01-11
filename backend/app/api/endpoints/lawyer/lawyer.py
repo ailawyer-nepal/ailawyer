@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from app.schemas.lawyer import LawyerResponse
+from app.services.llm import get_answer, translate_to_nepali
 from app.services.retrieval import retriever
 from app.services.qdrant_client_init import get_qdrant_client
-import pprint
 
 lawyer_module = APIRouter()
 client = get_qdrant_client()
@@ -14,17 +14,18 @@ client = get_qdrant_client()
 )
 async def get_ai_lawyer_response(question: str, collection_name: str):
     try:
+        query = translate_to_nepali(question)
         result = retriever(
             client=client,
             collection_name=collection_name,
-            query=question,
+            query=query,
         )
 
-        pprint.pprint(result)
+        answer = get_answer(user_query=query, top_5_chunks=result)
 
         return LawyerResponse(
             question=question,
-            answer="",
+            answer=answer,
             collection_name=collection_name
         )
     except Exception as e:
