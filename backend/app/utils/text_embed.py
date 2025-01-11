@@ -145,7 +145,7 @@ def store_embeddings_in_db(file_path, collection_name, client):
 
 if __name__ == "__main__":
     # Divide the data into chunks
-    file_path = os.path.abspath("/home/crux/coding/python/ai_lawyer/backend/data/banking_kasur_tatha_sajayaact.json")
+    file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/banking_kasur_tatha_sajayaact.json"))
     store_embeddings_in_db(
         file_path,
         "test7",
