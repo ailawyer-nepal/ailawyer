@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 from app.api.routers.user import user_router
 from app.api.routers.lawyer import lawyer_router
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 

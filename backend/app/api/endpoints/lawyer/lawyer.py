@@ -1,6 +1,10 @@
+import os
 from fastapi import APIRouter
 from app.schemas.lawyer import LawyerResponse
 import requests
+
+AZURE_ENDPOINT = os.environ.get('AZURE_ENDPOINT')
+AZURE_API_KEY = os.environ.get('AZURE_API_KEY')
 
 lawyer_module = APIRouter()
 
