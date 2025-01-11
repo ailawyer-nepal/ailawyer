@@ -7,8 +7,6 @@ from app.services.qdrant_client_init import get_qdrant_client
 # Load environment variables from .env file
 load_dotenv()
 
-from app.utils import embedding
-
 # Connect to the Qdrant server
 client = get_qdrant_client()
 # List all collections
@@ -58,7 +56,7 @@ embeddings = generate_embeddings(nepali_texts)
 
 # Retrieve points from a collection
 points = client.search(
-    collection_name="test7",
+    collection_name="test8",
     query_vector=embeddings[0]["embedding"],  # Example vector
     limit=5
 )

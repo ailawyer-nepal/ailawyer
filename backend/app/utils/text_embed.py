@@ -148,6 +148,6 @@ if __name__ == "__main__":
     file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/banking_kasur_tatha_sajayaact.json"))
     store_embeddings_in_db(
         file_path,
-        "test7",
+        "test8",
         qdrant_client
     )
