@@ -69,7 +69,8 @@ def get_answer(user_query, top_5_chunks):
     formatted_chunks = format_chunks(top_5_chunks)
     
     system_prompt = f"""Based on this document, you need to generate a short answer to the user query.
-        Also provide the section you are referencing to to derive the conclusion.
+        Also provide the section you are referencing to to derive the conclusion. If the answer is not present in the document,
+        respond with "I don't have information regarding your query" in Nepali.
         The document sections are:
 
         {formatted_chunks}
