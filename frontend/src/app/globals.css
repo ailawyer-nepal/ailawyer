@@ -21,6 +21,25 @@
   --dark-orange: #e57600;
 }
 
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
+  --dark-blue: #02216e;
+  --light-blue: #3566fc;
+  --light-blue-disabled: #b1ceff;
+  --light-blue-textarea: #d6e6ff;
+  --light-gray: #e0e0e0;
+  --dark-gray: #909090;
+  --light-red: #ff5867;
+  --dark-red: #d32737;
+  --light-green: #24a926;
+  --dark-green: #008643;
+  --light-yellow: #f3d148;
+  --dark-yellow: #ffb61d;
+  --light-orange: #ff6a42;
+  --dark-orange: #e57600;
+}
+
 html {
   @apply font-noto;
 }
