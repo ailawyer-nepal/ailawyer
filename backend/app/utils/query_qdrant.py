@@ -7,14 +7,6 @@ from app.services.qdrant_client_init import get_qdrant_client
 # Load environment variables from .env file
 load_dotenv()
 
-# Connect to the Qdrant server
-client = get_qdrant_client()
-# List all collections
-collections = client.get_collections()
-print("Collections:", collections)
-
-
-
 # Azure OpenAI API configuration
 AZURE_API_KEY = os.environ.get("AZURE_API_KEY")
 AZURE_ENDPOINT = os.environ.get("AZURE_ENDPOINT")
@@ -41,23 +33,29 @@ def generate_embeddings(texts):
     return embeddings
 
 
-# Example Nepali text
-nepali_texts = [
-    """
-(१) यस ऐनको नाम “बैङ्किङ्ग कसूर तथा सजाय ऐन, २०६४” रहेकोछ ।
-""",
-    "आयकर नियमहरू",
-    "फैसला: कर चोरीको मुद्दा",
-]
-
-# Generate embeddings
-embeddings = generate_embeddings(nepali_texts)
-
-
 # Retrieve points from a collection
-points = client.search(
-    collection_name="test8",
-    query_vector=embeddings[0]["embedding"],  # Example vector
-    limit=5
-)
-print("Points:", points)
+def test_retrieve_points():
+    # Connect to the Qdrant server
+    client = get_qdrant_client()
+    # List all collections
+    # collections = client.get_collections()
+    # print("Collections:", collections)
+
+    # Example Nepali text
+    nepali_texts = [
+        """
+    (१) यस ऐनको नाम “बैङ्किङ्ग कसूर तथा सजाय ऐन, २०६४” रहेकोछ ।
+    """,
+        "आयकर नियमहरू",
+        "फैसला: कर चोरीको मुद्दा",
+    ]
+
+    # Generate embeddings
+    embeddings = generate_embeddings(nepali_texts)
+
+    points = client.search(
+        collection_name="test8",
+        query_vector=embeddings[0]["embedding"],
+        limit=5
+    )
+    print("Points:", points)
