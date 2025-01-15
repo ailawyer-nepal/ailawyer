@@ -7,8 +7,9 @@ from datetime import timedelta
 from sqlalchemy.orm import Session
 
 # import
+from app.dependencies.user import get_current_user
 from app.schemas.user import User, UserLogin, Token
-from app.core.dependencies import get_db
+from app.core.dependencies import OAuth2EmailRequestForm, get_db
 from app.core.settings import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 from app.api.endpoints.user import functions as user_functions
 
@@ -19,14 +20,15 @@ auth_module = APIRouter()
 # getting access token for login 
 @auth_module.post("/login", response_model= Token)
 async def login_for_access_token(
-    user: UserLogin,
+    form_data: OAuth2EmailRequestForm = Depends(),
     db: Session = Depends(get_db)
 ) -> Token:
+    user = UserLogin(email=form_data.email, password=form_data.password)
     member = user_functions.authenticate_user(db, user=user)
     if not member:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -48,5 +50,5 @@ async def refresh_access_token(refresh_token: str, db: Session = Depends(get_db)
 
 # get curren user 
 @auth_module.get('/users/me/', response_model= User)
-async def read_current_user( current_user: Annotated[User, Depends(user_functions.get_current_user)]):
-    return current_user
+async def read_current_user(user: User = Depends(get_current_user)):
+    return user
