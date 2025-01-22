@@ -76,7 +76,8 @@ def process_json_chunks(json_chunks):
     for chunk in json_chunks:
         section_num = chunk['section_num']
         title = chunk['title']
-        content_array = chunk['content'] if isinstance(chunk['content'], list) else [chunk['content']]
+        content_array = chunk['content'] if isinstance(
+            chunk['content'], list) else [chunk['content']]
 
         for content_element in content_array:
             processed_chunk = {
@@ -106,7 +107,8 @@ def store_embeddings_in_db(file_path, collection_name, client):
     processed_chunks = process_json_chunks(json_chunks)
     print(f"Total number of chunks: {len(processed_chunks)}")
 
-    text_embeddings, processed_texts = create_hybrid_embeddings(processed_chunks)
+    text_embeddings, processed_texts = create_hybrid_embeddings(
+        processed_chunks)
     print(f"Created BERT embeddings with shape: {text_embeddings.shape}")
 
     # Create Qdrant collection with correct size for BERT embeddings
@@ -143,11 +145,16 @@ def store_embeddings_in_db(file_path, collection_name, client):
     print("Upserted points to Qdrant")
 
 
-if __name__ == "__main__":
-    # Divide the data into chunks
-    file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/banking_kasur_tatha_sajayaact.json"))
+dir_path = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "../../data"))
+
+# Read all the json files in the data folder and store them in the Qdrant collection
+
+files = os.listdir(dir_path)
+
+for file in files:
     store_embeddings_in_db(
-        file_path,
-        "test8",
+        os.path.join(dir_path, file),
+        file.split(".")[0],
         qdrant_client
     )
