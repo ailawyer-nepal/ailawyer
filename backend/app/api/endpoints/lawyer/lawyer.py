@@ -70,7 +70,4 @@ async def get_channels(
 
         return ListOfChannels(channels=channels)
     except Exception as e:
-        print("="*50)
-        print(e)
-        print("="*50)
         raise e
