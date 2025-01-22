@@ -44,18 +44,23 @@ export default function ChatBot() {
         timestamp: new Date(),
       };
 
-      const res = await fetch("http://localhost:8002/lawyer", {
-        method: "POST",
-        body: JSON.stringify({
-          query: message,
-          collection_name: "test8",
-          history: JSON.stringify(messages),
-          chunks: JSON.stringify(messages.map((m) => m.chunks).filter(Boolean)),
-        }),
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lawyer`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            query: message,
+            collection_name: "test8",
+            history: JSON.stringify(messages),
+            chunks: JSON.stringify(
+              messages.map((m) => m.chunks).filter(Boolean),
+            ),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       const data = await res.json();
 
       if (data.response) {
@@ -102,16 +107,14 @@ export default function ChatBot() {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`flex ${
-                message.sender === "bot" ? "justify-start" : "justify-end"
-              }`}
+              className={`flex ${message.sender === "bot" ? "justify-start" : "justify-end"
+                }`}
             >
               <div
-                className={`max-w-[70%] rounded-lg p-3 text-background ${
-                  message.sender === "bot"
+                className={`max-w-[70%] rounded-lg p-3 text-background ${message.sender === "bot"
                     ? "bg-light-gray mr-4"
                     : "bg-light-blue ml-4"
-                }`}
+                  }`}
               >
                 <p className="whitespace-pre-wrap">{message.content}</p>
               </div>
