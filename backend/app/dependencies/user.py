@@ -7,14 +7,13 @@ from app.core.dependencies import get_db, oauth2_scheme
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     try:
+        token_to_decode = token.split("Bearer ")[1]
+
         jwt_decoded = jwt.decode(
-            token,
+            token_to_decode,
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM]
         )
-        print("="*50)
-        print(jwt_decoded)
-        print("="*50)
 
         id = jwt_decoded["id"]
 
@@ -22,4 +21,5 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
         return user
     except ValueError:
+        print("ValueError")
         pass

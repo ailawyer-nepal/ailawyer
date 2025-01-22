@@ -1,12 +1,17 @@
+import json
 import os
+from typing import List
 from dotenv import load_dotenv
 
 import requests
+
+from app.utils.parse_history import parse_history
 
 load_dotenv()
 
 AZURE_ENDPOINT = os.environ.get('AZURE_ENDPOINT')
 AZURE_API_KEY = os.environ.get('AZURE_API_KEY')
+
 
 def translate_to_nepali(text):
     try:
@@ -55,7 +60,8 @@ def translate_to_nepali(text):
 def format_chunks(chunks):
     formatted_chunks = []
     for chunk in chunks:
-        section = chunk.get('section_num', 'N/A')  # Default to 'N/A' if section_num is missing
+        # Default to 'N/A' if section_num is missing
+        section = chunk.get('section_num', 'N/A')
         content = chunk.get('content', '')
         similarity = chunk.get('similarity', 'N/A')
         formatted_chunks.append(
@@ -64,18 +70,30 @@ def format_chunks(chunks):
     return "\n\n---\n\n".join(formatted_chunks)
 
 
-def get_answer(user_query, top_5_chunks):
+def get_answer(user_query, top_5_chunks, history, chunks_history):
     # Properly format chunks by joining the list of chunks with newlines and section separators
-    formatted_chunks = format_chunks(top_5_chunks)
-    
-    system_prompt = f"""Based on this document, you need to generate a short answer to the user query.
-        Also provide the section you are referencing to to derive the conclusion. If the answer is not present in the document,
-        respond with "I don't have information regarding your query" in Nepali. Write the entire response in Nepali 
+    chunks_history_parsed: List[str] = json.loads(chunks_history)
+    chunks_history_parsed_flat = []
+    for chunks in chunks_history_parsed:
+        for chunk in chunks:
+            chunks_history_parsed_flat.append(chunk)
+    print("="*50)
+    __import__('pprint').pprint(chunks_history_parsed_flat)
+    print("="*50)
+    __import__('pprint').pprint(top_5_chunks)
+    chunks_all = chunks_history_parsed_flat + top_5_chunks
+    formatted_chunks = format_chunks(chunks_all)
+    context = parse_history(history)
+
+    system_prompt = f"""Based on this document and the context provided, you need to generate an answer to the user query.
+        Also provide the section you are referencing to to derive the conclusion. Write the entire response in Nepali.
         The document sections are:
 
         {formatted_chunks}
+
+        If no chunk is provided and you don't have any relevant context, then you can say you don't have enough information to answer the query.
     """
-    
+
     try:
         res = requests.post(
             url=f"{AZURE_ENDPOINT}/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview",
@@ -92,7 +110,14 @@ def get_answer(user_query, top_5_chunks):
                     {
                         "role": "user",
                         "content": user_query
-                    }
+                    },
+                    *[
+                        {
+                            "role": ctx.role,
+                            "content": ctx.content
+                        }
+                        for ctx in context
+                    ]
                 ],
                 "temperature": 0.7,
                 "top_p": 0.95,
@@ -110,4 +135,3 @@ def get_answer(user_query, top_5_chunks):
     except Exception as e:
         print(f"Error during answer generation: {e}")
         return "Sorry, I encountered an error while generating the answer."
-
