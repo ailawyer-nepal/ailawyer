@@ -9,7 +9,7 @@ export default function LandingPage() {
     router.push("/about");
   };
   const goToChat = () => {
-    router.push("/chatbot");
+    router.push("/collections");
   };
 
   return (
