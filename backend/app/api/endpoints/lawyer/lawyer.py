@@ -1,11 +1,11 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy.orm.session import Session
 from app.core.dependencies import get_db
 from app.dependencies.user import get_current_user
 from app.models.lawyer import UserQueryRelation
 from app.models.user import User
-from app.schemas.lawyer import Channel, ListOfChannels
+from app.schemas.lawyer import Channel, ListOfChannels, QueryBody, QueryResponse
 from app.services.llm import get_answer, translate_to_nepali
 from app.services.retrieval import retriever
 from app.services.qdrant_client_init import get_qdrant_client
@@ -13,38 +13,6 @@ from app.services.qdrant_client_init import get_qdrant_client
 lawyer_module = APIRouter()
 client = get_qdrant_client()
 
-# @lawyer_module.get(
-#     '/',
-#     response_model=LawyerResponse,
-#     description='Get AI lawyer response. Create a new query response if not found.'
-# )
-# async def get_ai_lawyer_response(
-#     query: str,
-#     collection_name: str,
-#     chat_id: str | None = None,
-#     user: User = Depends(get_current_user),
-# ):
-#     # try:
-#     #     query = translate_to_nepali(question)
-#     #     result = retriever(
-#     #         client=client,
-#     #         collection_name=collection_name,
-#     #         query=query,
-#     #     )
-#     #
-#     #     answer = get_answer(user_query=query, top_5_chunks=result)
-#     #
-#     #     return LawyerResponse(
-#     #         question=question,
-#     #         answer=answer,
-#     #         collection_name=collection_name
-#     #     )
-#     # except Exception as e:
-#     #     raise e
-#     try:
-#         pass
-#     except Exception as e:
-#         raise e
 
 @lawyer_module.get(
     '/',
@@ -56,7 +24,8 @@ async def get_channels(
     db: Session = Depends(get_db)
 ):
     try:
-        db_channels = db.query(UserQueryRelation).filter(UserQueryRelation.user_id == user.id).all()
+        db_channels = db.query(UserQueryRelation).filter(
+            UserQueryRelation.user_id == user.id).all()
 
         channels = [
             Channel(
@@ -71,3 +40,36 @@ async def get_channels(
         return ListOfChannels(channels=channels)
     except Exception as e:
         raise e
+
+
+@lawyer_module.post(
+    '/',
+    response_model=QueryResponse,
+    description='Create a new query response.'
+)
+async def get_response(
+    data: QueryBody = Body(...)
+):
+    try:
+        query = translate_to_nepali(data.query)
+        result = retriever(
+            client=client,
+            collection_name=data.collection_name,
+            query=query,
+        )
+
+        answer = get_answer(
+            user_query=query,
+            top_5_chunks=result,
+            history=data.history,
+            chunks_history=data.chunks
+        )
+
+        return QueryResponse(
+            query=data.query,
+            response=answer,
+            collection_name=data.collection_name,
+            chunks=result
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
