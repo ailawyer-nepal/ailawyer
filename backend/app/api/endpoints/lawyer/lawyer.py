@@ -73,3 +73,12 @@ async def get_response(
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@lawyer_module.get('/collections', description='Get all collections.')
+def get_collections():
+    try:
+        collections = client.get_collections()
+        return collections
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
