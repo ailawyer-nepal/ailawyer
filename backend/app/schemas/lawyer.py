@@ -16,6 +16,7 @@ class ListOfChannels(BaseModel):
 
 class QueryResponse(BaseModel):
     query: str
+    expanded: str
     response: str
     collection_name: str
     chunks: List[Dict[Any, Any]]
