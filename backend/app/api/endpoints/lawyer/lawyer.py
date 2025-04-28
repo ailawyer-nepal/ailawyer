@@ -68,6 +68,7 @@ async def get_response(
 
         return QueryResponse(
             query=data.query,
+            expanded=query,
             response=answer,
             collection_name=data.collection_name,
             chunks=result
