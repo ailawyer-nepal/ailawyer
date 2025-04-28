@@ -52,6 +52,7 @@ async def get_response(
 ):
     try:
         query = translate_to_nepali(data.query)
+        # query = data.query
         result = retriever(
             client=client,
             collection_name=data.collection_name,
