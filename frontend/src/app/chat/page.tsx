@@ -23,6 +23,7 @@ import {
 	Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import Header from "@/components/header";
 
 interface Message {
 	id: string;
@@ -137,36 +138,7 @@ export default function ChatPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col">
-			{/* Header */}
-			<header className="border-b bg-white shadow-sm sticky top-0 z-50">
-				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-4">
-							<Button variant="ghost" size="sm" asChild>
-								<Link href="/">
-									<ArrowLeft className="h-4 w-4 mr-2" />
-									Back
-								</Link>
-							</Button>
-							<div className="flex items-center space-x-3">
-								<div className="p-2 bg-primary rounded-lg shadow-md">
-									<Bot className="h-5 w-5 text-white" />
-								</div>
-								<div>
-									<h1 className="text-lg font-bold text-secondary">
-										AI Lawyer
-									</h1>
-									<p className="text-sm text-gray-600">Legal Assistant Chat</p>
-								</div>
-							</div>
-						</div>
-						<Button variant="outline" size="sm" onClick={clearChat}>
-							<Trash2 className="h-4 w-4 mr-2" />
-							Clear Chat
-						</Button>
-					</div>
-				</div>
-			</header>
+			<Header />
 
 			{/* Collection Selection */}
 			<div className="border-b bg-white shadow-sm p-4">

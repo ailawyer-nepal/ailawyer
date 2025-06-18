@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -19,44 +20,9 @@ import {
 import Link from "next/link";
 
 export default function HomePage() {
-	const scrollToAbout = () => {
-		document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-	};
-
 	return (
 		<div className="min-h-screen bg-gray-50">
-			{/* Header */}
-			<header className="border-b bg-white shadow-sm sticky top-0 z-50">
-				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<div className="p-2 bg-primary rounded-lg shadow-md">
-								<Scale className="h-6 w-6 text-white" />
-							</div>
-							<div>
-								<h1 className="text-xl font-bold text-secondary">
-									Nepal AI Legal Assistant
-								</h1>
-								<p className="text-sm text-gray-600">न्यायिक सहायता प्रणाली</p>
-							</div>
-						</div>
-						<nav className="hidden md:flex space-x-6">
-							<button
-								onClick={scrollToAbout}
-								className="text-secondary hover:text-primary transition-colors font-medium"
-							>
-								About
-							</button>
-							<Link
-								href="/chat"
-								className="text-secondary hover:text-primary transition-colors font-medium"
-							>
-								Chat
-							</Link>
-						</nav>
-					</div>
-				</div>
-			</header>
+			<Header />
 
 			{/* Hero Section */}
 			<section className="py-20 px-4 bg-white">
@@ -83,15 +49,16 @@ export default function HomePage() {
 						</p>
 
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
-							<Button
-								onClick={scrollToAbout}
-								variant="outline"
-								size="lg"
-								className="text-lg px-8 py-6 border-2 border-secondary text-secondary-foreground hover:bg-secondary hover:text-white transition-all duration-300"
-							>
-								<BookOpen className="mr-2 h-5 w-5" />
-								About the Project
-							</Button>
+							<Link href="/#about">
+								<Button
+									variant="outline"
+									size="lg"
+									className="text-lg px-8 py-6 border-2 border-secondary text-secondary-foreground hover:bg-secondary hover:text-white transition-all duration-300"
+								>
+									<BookOpen className="mr-2 h-5 w-5" />
+									About the Project
+								</Button>
+							</Link>
 
 							<Button
 								asChild

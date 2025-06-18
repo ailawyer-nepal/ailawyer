@@ -97,3 +97,7 @@
 * {
   border-color: var(--border);
 }
+
+html {
+  scroll-behavior: smooth;
+}
