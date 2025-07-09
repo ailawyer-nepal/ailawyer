@@ -1,5 +1,4 @@
-# FastAPI Starter Kit
-A professional FastAPI template
+# AI LAWYER 
 
 ## Features:
 
